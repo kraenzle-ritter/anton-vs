@@ -67,6 +67,25 @@ preselected. (Plain **Enter** inserts once and closes.)
 
 ## Install
 
+### From a `.vsix` (end users / customers, no Marketplace)
+
+The extension does **not** need the VS Code Marketplace. Every tagged release attaches a
+ready-to-install `.vsix` to its [GitHub Release](https://github.com/kraenzle-ritter/anton-vs/releases) —
+download that file and install it directly.
+
+**Command line:**
+
+```bash
+code --install-extension anton-vs-1.0.0.vsix
+```
+
+**Or in the VS Code UI:** open the **Extensions** panel → the **`…` menu** (top right) →
+**“Install from VSIX…”** → pick the downloaded file.
+
+Everything works exactly as via the Marketplace (settings, keybinding, menus). The only
+difference: **`.vsix` installs are not auto-updated** — to move to a newer version,
+download the new `.vsix` from the latest Release and install it over the old one.
+
 ### From source (development)
 
 ```bash
