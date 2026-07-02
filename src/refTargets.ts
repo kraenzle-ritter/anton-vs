@@ -180,6 +180,26 @@ export function buildTag(startTag: string, attr: string, value: string): string 
     return "<" + body + (selfClose ? "/>" : ">");
 }
 
+/**
+ * Remove `attr` from a start tag, preserving every other attribute (and the leading
+ * space, so no double space is left behind). Returns the tag unchanged if the attribute
+ * is absent. Handles self-closing tags. The inverse of buildTag.
+ */
+export function removeAttr(startTag: string, attr: string): string {
+    const selfClose = startTag.endsWith("/>");
+    let body = startTag.substring(1, selfClose ? startTag.length - 2 : startTag.length - 1);
+    const m = attrPattern(attr).exec(body);
+    if (m) {
+        // attrPattern captures a leading \s, so slicing out m[0] also drops that space.
+        body = body.substring(0, m.index) + body.substring(m.index + m[0].length);
+    }
+    // A self-closing tag whose only attribute was removed leaves a trailing space; trim it.
+    if (selfClose) {
+        body = body.replace(/\s+$/, "");
+    }
+    return "<" + body + (selfClose ? "/>" : ">");
+}
+
 /** Build a `<element attr="value">selected</element>` wrapper. Port of TextWrapTarget.wrap. */
 export function wrapFragment(elementName: string, attr: string, value: string, selected: string): string {
     const open = "<" + elementName + " " + attr + '="' + escapeAttr(value) + '">';

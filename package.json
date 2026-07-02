@@ -2,7 +2,7 @@
   "name": "anton-vs",
   "displayName": "anton-vs",
   "description": "Searches actors, places and keywords live in Anton and writes the matched id into a configurable attribute (default @ref) of the TEI element under the caret — or wraps a selection (Wrap & Tag).",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "kr",
   "license": "MIT",
   "icon": "icon.png",
@@ -36,6 +36,12 @@
         "icon": "$(references)"
       },
       {
+        "command": "anton.clearReference",
+        "title": "Anton: Referenz entfernen",
+        "category": "Anton",
+        "icon": "$(clear-all)"
+      },
+      {
         "command": "anton.openSettings",
         "title": "Anton: Einstellungen öffnen",
         "category": "Anton"
@@ -55,6 +61,11 @@
           "command": "anton.tagReference",
           "when": "editorLangId =~ /xml|tei|xslt/",
           "group": "1_modification@100"
+        },
+        {
+          "command": "anton.clearReference",
+          "when": "editorLangId =~ /xml|tei|xslt/",
+          "group": "1_modification@101"
         }
       ],
       "editor/title": [
@@ -67,6 +78,10 @@
       "commandPalette": [
         {
           "command": "anton.tagReference",
+          "when": "editorLangId =~ /xml|tei|xslt/"
+        },
+        {
+          "command": "anton.clearReference",
           "when": "editorLangId =~ /xml|tei|xslt/"
         },
         {

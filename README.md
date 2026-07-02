@@ -64,6 +64,10 @@ name before tagging. The search box stays open.
 **Switch register.** When more than one register is configured, the search box shows a
 **list button** (top-right) to search a different register without leaving the dialog.
 
+**Remove a reference.** Put the caret in a mapped element and run **“Anton: Referenz
+entfernen”** (context menu or command palette) to clear its reference attribute again —
+all other attributes are preserved.
+
 ## Requirements
 
 - **VS Code 1.85 or newer.** No runtime dependencies — uses Node's built-in HTTP client

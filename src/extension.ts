@@ -15,12 +15,14 @@ import {
     findNext,
     indexOfCloseTag,
     locateElement,
+    removeAttr,
     wrapFragment
 } from "./refTargets";
 
 export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.commands.registerCommand("anton.tagReference", () => tagReference()),
+        vscode.commands.registerCommand("anton.clearReference", () => clearReference()),
         vscode.commands.registerCommand("anton.openSettings", () =>
             vscode.commands.executeCommand("workbench.action.openSettings", "@ext:kr.anton-vs"))
     );
@@ -50,6 +52,45 @@ async function tagReference(): Promise<void> {
         }
         preferElement = res.element;
     }
+}
+
+/** Remove the Anton reference attribute from the mapped element under the caret. */
+async function clearReference(): Promise<void> {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showInformationMessage("Anton: kein Editor geöffnet.");
+        return;
+    }
+    const cfg = new Config();
+    const doc = editor.document;
+    const caret = doc.offsetAt(editor.selection.start);
+    const element = locateElement(doc.getText(), caret, cfg.targets);
+    if (!element) {
+        vscode.window.showInformationMessage(
+            `Anton: Cursor in ein konfiguriertes Element setzen (${[...cfg.targets.keys()].join(", ")}), `
+            + `um dessen Referenz zu entfernen.`
+        );
+        return;
+    }
+    if (!element.currentRef) {
+        vscode.window.showInformationMessage(
+            `Anton: „${element.elementName}“ hat kein @${element.attribute} zum Entfernen.`
+        );
+        return;
+    }
+    const newTag = removeAttr(element.tag, element.attribute);
+    const range = new vscode.Range(
+        doc.positionAt(element.tagStart),
+        doc.positionAt(element.tagEnd + 1)
+    );
+    const ok = await editor.edit((eb) => eb.replace(range, newTag));
+    if (!ok) {
+        vscode.window.showErrorMessage("Anton: Referenz konnte nicht entfernt werden.");
+        return;
+    }
+    vscode.window.showInformationMessage(
+        `Anton: @${element.attribute} von „${element.elementName}“ entfernt.`
+    );
 }
 
 interface TagResult {

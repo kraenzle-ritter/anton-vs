@@ -3,6 +3,13 @@
 All notable changes to **anton-vs** are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/); versions match the pushed `v*` git tags.
 
+## [1.2.0]
+
+### Added
+- **“Anton: Referenz entfernen” command** — clears the reference attribute from the mapped
+  element under the caret, preserving all other attributes. Available in the editor context
+  menu and the command palette (no default keybinding).
+
 ## [1.1.0]
 
 ### Added

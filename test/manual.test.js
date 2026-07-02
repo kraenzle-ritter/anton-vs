@@ -117,6 +117,23 @@ check("buildTag escapes the value", () => {
     assert.strictEqual(out, '<persName ref="a&quot;b&amp;c">');
 });
 
+// --- removeAttr: attribute removal with preservation ----------------------
+
+check("removeAttr drops the attribute preserving others", () => {
+    const out = rt.removeAttr('<persName ref="demo-actors-2" n="2">', "ref");
+    assert.strictEqual(out, '<persName n="2">');
+});
+
+check("removeAttr leaves the tag untouched when the attribute is absent", () => {
+    const out = rt.removeAttr('<persName xml:id="p1">', "ref");
+    assert.strictEqual(out, '<persName xml:id="p1">');
+});
+
+check("removeAttr tidies a self-closing tag whose only attribute was removed", () => {
+    const out = rt.removeAttr('<term ref="demo-keywords-5"/>', "ref");
+    assert.strictEqual(out, '<term/>');
+});
+
 // --- Wrap & Tag -----------------------------------------------------------
 
 check("wrapFragment wraps the selection", () => {
