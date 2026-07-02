@@ -7,7 +7,7 @@
 
 import * as vscode from "vscode";
 import { Config } from "./config";
-import { search } from "./antonClient";
+import { isAbortError, search } from "./antonClient";
 import { AntonEntity, entityLabel } from "./types";
 import {
     buildTag,
@@ -264,6 +264,7 @@ function pickEntity(
         let switching = false;
         let queryToken = 0;
         let debounce: ReturnType<typeof setTimeout> | undefined;
+        let inflight: AbortController | undefined;
 
         qp.matchOnDetail = true;
         qp.matchOnDescription = true;
@@ -271,25 +272,34 @@ function pickEntity(
             qp.buttons = [SWITCH_BUTTON];
         }
 
+        const setTitle = (shown: number, total: number) => {
+            const more = total > shown ? `  ·  ${shown} von ${total} — Suche verfeinern` : "";
+            qp.title = `Anton · ${elementName} · Register: ${register}${more}`;
+        };
+
         const refreshMeta = () => {
-            qp.title = `Anton · ${elementName} · Register: ${register}`;
+            setTitle(0, 0);
             qp.placeholder = "In Anton suchen…"
                 + (currentRef ? `  (aktuell: ${currentRef})` : "");
         };
 
         const doSearch = (query: string) => {
             const token = ++queryToken;
+            inflight?.abort(); // cancel the superseded request instead of just discarding it
+            const controller = new AbortController();
+            inflight = controller;
             qp.busy = true;
-            search(register, query, cfg, undefined)
-                .then((hits) => {
+            search(register, query, cfg, controller.signal)
+                .then((res) => {
                     if (token !== queryToken || resolved) {
                         return; // stale response
                     }
-                    qp.items = hits.map((e) => toItem(e, currentRef, cfg));
+                    qp.items = res.entities.map((e) => toItem(e, currentRef, cfg));
+                    setTitle(res.entities.length, res.total);
                     qp.busy = false;
                 })
                 .catch((err) => {
-                    if (token !== queryToken || resolved) {
+                    if (isAbortError(err) || token !== queryToken || resolved) {
                         return;
                     }
                     qp.busy = false;
@@ -352,6 +362,7 @@ function pickEntity(
             if (debounce) {
                 clearTimeout(debounce);
             }
+            inflight?.abort();
             qp.hide();
             qp.dispose();
             resolve(result);

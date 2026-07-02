@@ -39,7 +39,8 @@ documents. Two ways to start, then the same live search:
 
 1. Put the caret inside a mapped element (e.g. `<persName>…</persName>`).
 2. Trigger the action. A search box opens, pre-filled with the element text. Results
-   update live as you type.
+   update live as you type. If Anton has more hits than fit the page, the title shows the
+   count (e.g. `30 von 142 — Suche verfeinern`) so a truncated list is obvious.
 3. Pick a hit (**Enter**) → the extension sets or replaces the attribute on that
    element. Other attributes are preserved.
 

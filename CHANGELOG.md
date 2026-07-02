@@ -3,6 +3,19 @@
 All notable changes to **anton-vs** are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/); versions match the pushed `v*` git tags.
 
+## [1.3.0]
+
+### Added
+- **Result-count hint.** When Anton has more matches than the page shows, the search
+  title reads e.g. `30 von 142 — Suche verfeinern`, so a truncated list is never mistaken
+  for “nothing more found”.
+
+### Changed
+- **Superseded searches are now truly cancelled** (AbortController) instead of just having
+  their responses discarded — less wasted bandwidth while typing.
+- **Short-lived result cache (30 s).** Serial tagging re-searches the same surface text
+  every round; identical queries are now served from cache instead of re-hitting the server.
+
 ## [1.2.0]
 
 ### Added
