@@ -195,6 +195,10 @@ const CONTINUE_BUTTON: vscode.QuickInputButton = {
     iconPath: new vscode.ThemeIcon("arrow-right"),
     tooltip: "Einfügen & weiter (nächste Fundstelle taggen)"
 };
+const OPEN_BUTTON: vscode.QuickInputButton = {
+    iconPath: new vscode.ThemeIcon("link-external"),
+    tooltip: "In Anton öffnen (Detailseite im Browser)"
+};
 const SWITCH_BUTTON: vscode.QuickInputButton = {
     iconPath: new vscode.ThemeIcon("list-selection"),
     tooltip: "Register wechseln"
@@ -270,6 +274,9 @@ function pickEntity(
         qp.onDidTriggerItemButton((e) => {
             if (e.button === CONTINUE_BUTTON) {
                 finish({ entity: e.item.entity, wantsNext: true });
+            } else if (e.button === OPEN_BUTTON && e.item.entity.permalink) {
+                // Open the Anton detail page to verify the hit; keep the picker open.
+                vscode.env.openExternal(vscode.Uri.parse(e.item.entity.permalink));
             }
         });
 
@@ -324,7 +331,7 @@ function toItem(e: AntonEntity, currentRef: string | undefined, cfg: Config): En
         description: isCurrent ? "● aktuell" : "",
         detail: "→ " + value,
         entity: e,
-        buttons: [CONTINUE_BUTTON],
+        buttons: e.permalink ? [OPEN_BUTTON, CONTINUE_BUTTON] : [CONTINUE_BUTTON],
         // Keep every server hit visible: the query already drove the search, so we must
         // not let VS Code's client-side fuzzy filter hide hits matched on alternative
         // names / variants whose label doesn't contain the typed substring.

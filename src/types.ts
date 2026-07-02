@@ -10,6 +10,7 @@ export interface AntonEntity {
     type: string;    // Anton authority_type, e.g. "Person" / "Körperschaft" / ""
     detail: string;  // optional extra info (place: city/state/country), may be empty
     register: string; // "actors" | "places" | "keywords" | ...
+    permalink: string; // human-facing Anton detail page, e.g. https://kr.anton.ch/actors/2 (may be empty)
 }
 
 /** Human-readable one-line label for the results list, mirroring AntonEntity.toString(). */

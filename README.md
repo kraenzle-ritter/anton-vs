@@ -57,6 +57,10 @@ occurrence of the same text** and reopens the search — so tagging every mentio
 person is a rhythm of *pick → ▶ → pick → ▶*. The previously chosen wrap element stays
 preselected. (Plain **Enter** inserts once and closes.)
 
+**Verify a hit.** Each result also carries a **↗ button** (“In Anton öffnen”) that opens
+the entity’s Anton detail page in the browser — handy to disambiguate people with the same
+name before tagging. The search box stays open.
+
 **Switch register.** When more than one register is configured, the search box shows a
 **list button** (top-right) to search a different register without leaving the dialog.
 

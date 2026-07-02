@@ -60,10 +60,40 @@ function httpGet(urlStr: string, insecure: boolean): Promise<string> {
                 }
             });
         });
-        req.on("error", reject);
+        req.on("error", (e) => reject(friendlyNetworkError(e, u)));
         req.on("timeout", () => req.destroy(new Error("Anton timeout: " + urlStr)));
         req.end();
     });
+}
+
+// Map the most common Node TLS/DNS failures to an actionable hint that names
+// anton.baseUrl — the setting the user almost always has to fix (e.g. a host not
+// covered by the certificate, as happens with a mistyped tenant subdomain).
+function friendlyNetworkError(e: any, u: URL): Error {
+    const code = e?.code as string | undefined;
+    const host = u.hostname;
+    switch (code) {
+        case "ERR_TLS_CERT_ALTNAME_INVALID":
+            return new Error(
+                `Der Hostname „${host}“ passt nicht zum TLS-Zertifikat des Servers. `
+                + `Prüfe „anton.baseUrl“ (Tippfehler im Tenant-Namen?). `
+                + `Für lokale Test-Hosts kann „anton.insecureTls“ aktiviert werden.\n${e.message}`
+            );
+        case "ENOTFOUND":
+        case "EAI_AGAIN":
+            return new Error(`Host „${host}“ nicht erreichbar (DNS). Prüfe „anton.baseUrl“.\n${e.message}`);
+        case "DEPTH_ZERO_SELF_SIGNED_CERT":
+        case "SELF_SIGNED_CERT_IN_CHAIN":
+        case "UNABLE_TO_VERIFY_LEAF_SIGNATURE":
+            return new Error(
+                `Das TLS-Zertifikat von „${host}“ ist nicht vertrauenswürdig. `
+                + `Für lokale DDEV/mkcert-Hosts „anton.insecureTls“ aktivieren.\n${e.message}`
+            );
+        case "ECONNREFUSED":
+            return new Error(`Verbindung zu „${host}“ abgelehnt. Läuft der Anton-Server unter „anton.baseUrl“?\n${e.message}`);
+        default:
+            return e instanceof Error ? e : new Error(String(e));
+    }
 }
 
 function parse(register: string, body: string): AntonEntity[] {
@@ -90,7 +120,8 @@ function parse(register: string, body: string): AntonEntity[] {
         const label = firstNonEmpty(m, "fullname", "name", "label");
         const type = firstNonEmpty(m, "authority_type", "type");
         const detail = register === "places" ? placeDetail(m) : "";
-        out.push({ id, fullId, label, type, detail, register });
+        const permalink = str(m.permalink);
+        out.push({ id, fullId, label, type, detail, register, permalink });
     }
     return out;
 }
