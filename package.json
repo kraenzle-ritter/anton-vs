@@ -44,7 +44,7 @@
       {
         "command": "anton.tagReference",
         "key": "ctrl+shift+a",
-        "mac": "cmd+shift+a",
+        "mac": "cmd+alt+a",
         "when": "editorTextFocus && !editorReadonly && editorLangId =~ /xml|tei|xslt/"
       }
     ],

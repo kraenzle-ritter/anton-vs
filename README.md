@@ -30,7 +30,7 @@ of `@ref` — see the per-element attribute override below.)
 
 ## How it works
 
-Trigger the action with **Ctrl+Shift+A** (macOS **Cmd+Shift+A**), the
+Trigger the action with **Ctrl+Shift+A** (macOS **Cmd+Alt+A**), the
 **⧉ button in the editor title bar**, the command palette (**“Anton: Referenz einfügen
 / Auswahl taggen”**) or the editor context menu. All four appear only for XML/TEI/XSLT
 documents. Two ways to start, then the same live search:
