@@ -1,0 +1,137 @@
+{
+  "name": "anton-vs",
+  "displayName": "anton-vs",
+  "description": "Searches actors, places and keywords live in Anton and writes the matched id into a configurable attribute (default @ref) of the TEI element under the caret — or wraps a selection (Wrap & Tag).",
+  "version": "1.0.0",
+  "publisher": "kr",
+  "license": "MIT",
+  "author": "Andreas Kränzle / K-R <kraenzle@k-r.ch>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kraenzle-ritter/anton-vs"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "TEI",
+    "XML",
+    "Anton",
+    "tagging",
+    "normdaten",
+    "authority"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "anton.tagReference",
+        "title": "Anton: Referenz einfügen / Auswahl taggen",
+        "category": "Anton",
+        "icon": "$(references)"
+      },
+      {
+        "command": "anton.openSettings",
+        "title": "Anton: Einstellungen öffnen",
+        "category": "Anton"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "anton.tagReference",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorTextFocus && !editorReadonly && editorLangId =~ /xml|tei|xslt/"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "anton.tagReference",
+          "when": "editorLangId =~ /xml|tei|xslt/",
+          "group": "1_modification@100"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "anton.tagReference",
+          "when": "editorLangId =~ /xml|tei|xslt/",
+          "group": "navigation@100"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "anton.tagReference",
+          "when": "editorLangId =~ /xml|tei|xslt/"
+        },
+        {
+          "command": "anton.openSettings"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Anton",
+      "properties": {
+        "anton.baseUrl": {
+          "type": "string",
+          "default": "https://kr.anton.ch",
+          "markdownDescription": "Anton instance / tenant URL. The project slug (e.g. `demo-`) is delivered by Anton inside `full_id`, so only this URL must be correct."
+        },
+        "anton.perPage": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "description": "Number of hits requested per search (page size)."
+        },
+        "anton.attribute": {
+          "type": "string",
+          "default": "ref",
+          "description": "Default attribute that receives the id (TEI editions commonly use @ref). Can be overridden per element in anton.mapping via an @attribute suffix."
+        },
+        "anton.template": {
+          "type": "string",
+          "default": "{fullId}",
+          "markdownDescription": "Value written into the attribute. Placeholders: `{fullId}` `{slug}` `{register}` `{id}`. Example: `#{fullId}` to write `#demo-actors-123`."
+        },
+        "anton.mapping": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "persName=actors",
+            "orgName=actors",
+            "placeName=places",
+            "objectName=keywords",
+            "term=keywords",
+            "unit=keywords@corresp"
+          ],
+          "markdownDescription": "Element → register mapping, one `element=register` per entry. An optional `@attribute` suffix overrides the target attribute for that element (e.g. `unit=keywords@corresp`). Lines starting with `#` are ignored."
+        },
+        "anton.insecureTls": {
+          "type": "boolean",
+          "default": false,
+          "description": "Accept self-signed / untrusted TLS certificates (for local DDEV/mkcert hosts). Leave off for a URL with a valid certificate."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && node ./test/manual.test.js",
+    "package": "vsce package --allow-missing-repository",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.0",
+    "typescript": "^5.4.0"
+  }
+}

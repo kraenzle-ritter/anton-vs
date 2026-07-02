@@ -1,0 +1,61 @@
+name: Release
+
+# Build the .vsix and publish it as a GitHub Release whenever a v* tag is pushed.
+#
+#   git tag v1.0.0 && git push origin v1.0.0
+#
+# If a VSCE_PAT repository secret is present, the extension is also published to the
+# VS Code Marketplace. Run `npm test` locally before tagging — it is the source of truth.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Derive version from tag
+        id: v
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install
+        run: npm ci
+
+      - name: Keep package.json version in sync with the tag
+        env:
+          V: ${{ steps.v.outputs.version }}
+        run: npm version "$V" --no-git-tag-version --allow-same-version
+
+      - name: Compile & test
+        run: |
+          npm run compile
+          npm test
+
+      - name: Package .vsix
+        env:
+          V: ${{ steps.v.outputs.version }}
+        run: npx @vscode/vsce package --allow-missing-repository -o "anton-vs-$V.vsix"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: anton-vs-${{ steps.v.outputs.version }}.vsix
+          generate_release_notes: true
+
+      - name: Publish to VS Code Marketplace (optional)
+        if: ${{ env.VSCE_PAT != '' }}
+        run: npx @vscode/vsce publish --packagePath "anton-vs-${{ steps.v.outputs.version }}.vsix"
