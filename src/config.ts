@@ -21,6 +21,10 @@ export class Config {
         return Number.isFinite(n) && n > 0 ? Math.floor(n) : 30;
     }
 
+    get apiToken(): string {
+        return (this.cfg.get<string>("apiToken", "") || "").trim();
+    }
+
     get insecureTls(): boolean {
         return this.cfg.get<boolean>("insecureTls", false);
     }

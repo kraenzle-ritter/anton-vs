@@ -139,7 +139,15 @@ settings live under the `anton.*` namespace in `settings.json`:
 | `anton.attribute`   | Default attribute that receives the id.                                | `ref` |
 | `anton.template`    | Value written into the attribute. Placeholders: `{fullId}` `{slug}` `{register}` `{id}`. | `{fullId}` |
 | `anton.mapping`     | Array of `element=register` entries; an `@attribute` suffix overrides the attribute for that element. | see below |
+| `anton.apiToken`    | API token for an archive that is not public (sent as `Authorization: Bearer`). Not synced. | empty |
 | `anton.insecureTls` | Accept self-signed / untrusted TLS certs (local DDEV/mkcert hosts).    | `false` |
+
+### Archives that are not public
+
+Since Anton v0.100.1 an archive that is not public answers `/api/actors`, `/api/places`
+and `/api/keywords` only with a token (`HTTP 401 … This archive is not public`).
+Create a token in Anton (user administration → API tokens) and enter it in
+`anton.apiToken`. A public archive needs no token.
 
 Default mapping (editable):
 

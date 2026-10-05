@@ -3,6 +3,14 @@
 All notable changes to **anton-vs** are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/); versions match the pushed `v*` git tags.
 
+## [1.4.0]
+
+### Added
+- **API token for archives that are not public** (`anton.apiToken`). Since Anton v0.100.1
+  such an archive answers the search only with a token; it is sent as
+  `Authorization: Bearer`. The setting is excluded from Settings Sync.
+- A 401 now says what to do: set a token, or check the one that was rejected.
+
 ## [1.3.0]
 
 ### Added

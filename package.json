@@ -2,7 +2,7 @@
   "name": "anton-vs",
   "displayName": "anton-vs",
   "description": "Searches actors, places and keywords live in Anton and writes the matched id into a configurable attribute (default @ref) of the TEI element under the caret — or wraps a selection (Wrap & Tag).",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "publisher": "kr",
   "license": "MIT",
   "icon": "icon.png",
@@ -127,6 +127,12 @@
             "unit=keywords@corresp"
           ],
           "markdownDescription": "Element → register mapping, one `element=register` per entry. An optional `@attribute` suffix overrides the target attribute for that element (e.g. `unit=keywords@corresp`). Lines starting with `#` are ignored."
+        },
+        "anton.apiToken": {
+          "type": "string",
+          "default": "",
+          "ignoreSync": true,
+          "markdownDescription": "API token for an archive that is not public. Anton then answers the search only with a token (sent as `Authorization: Bearer`). Create it in Anton under the user administration. Leave empty for a public archive."
         },
         "anton.insecureTls": {
           "type": "boolean",
