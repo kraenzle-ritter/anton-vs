@@ -1,5 +1,10 @@
 # anton-vs
 
+[![CI](https://github.com/kraenzle-ritter/anton-vs/actions/workflows/ci.yml/badge.svg)](https://github.com/kraenzle-ritter/anton-vs/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/kraenzle-ritter/anton-vs)](https://github.com/kraenzle-ritter/anton-vs/releases)
+[![License](https://img.shields.io/github/license/kraenzle-ritter/anton-vs)](LICENSE)
+[![VS Code](https://img.shields.io/badge/VS%20Code-extension-0b5394)](https://code.visualstudio.com/)
+
 A **VS Code** extension that searches actors, places and keywords **live in
 [Anton](https://kr.anton.ch)** and writes the matched id into an attribute of the
 TEI/XML element under the caret. It is the VS Code counterpart of the
